@@ -17,7 +17,7 @@ echo " Step3 authorize-security-group-ingress"
 aws ec2 authorize-security-group-ingress --group-id $groupid --protocol tcp --port 22 --cidr 0.0.0.0/0
 
 echo " Step4 - Launch Instance 
-aws ec2 run-instances --image-id $1 --count $2 --instance-type t2.micro --key-name Week4Key  --security-groups my-group --user-data file://installapp.sh
+aws ec2 run-instances --image-id $1 --count $2 --instance-type t2.micro --key-name Week4Key  --security-groups my-group --client-token amenatoken --user-data file://installapp.sh
 
 #echo  " Step 5 - Get Instance ID"
 #ID=$(aws ec2 describe-instances --filter "Name=instance-state-name,Values=running" --query 'Reservations[].Instances[].InstanceId')
