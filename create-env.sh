@@ -67,4 +67,5 @@ aws autoscaling create-launch-configuration --launch-configuration-name my-confi
 echo " Launching the aws autoscaling Group with launch configuration-name, set min, max, and desired capacity and attaching the load-balancer"
 
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name my-config-name --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
-
+echo " Display the Auto scaling group on Screen"
+aws autoscaling describe-auto-scaling-instances --output json
