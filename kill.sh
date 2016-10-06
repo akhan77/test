@@ -3,6 +3,7 @@
 
 ##IMAGE ID = ami-06b94666  
 ## Values for $1 is for Image Id and $2 for Count"
+echo "This script is to destroy resources built with create-env.sh script"
 
 echo " Decrease Desired capacity of Autoscaling group to 1"
 aws autoscaling  set-desired-capacity --auto-scaling-group-name my-scaling-group --desired-capacity 1
