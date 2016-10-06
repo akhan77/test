@@ -7,25 +7,29 @@ echo "This script is to destroy resources built with create-env.sh script"
 
 echo " Decrease Desired capacity of Autoscaling group to 1"
 aws autoscaling  set-desired-capacity --auto-scaling-group-name my-scaling-group --desired-capacity 1
+
+echo " Detachng Load Balancer from autoscaling group"
 aws autoscaling detach-load-balancers --auto-scaling-group-name my-scaling-group --load-balancer-names my-load-balancer
 
 ## Update autoscaling group min/max to Zero
+echo " Updating autoscaling group desired size and min size to zero"
 aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-scaling-group --max-size 5 --min-size 0 --desired-capacity 1
 aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-scaling-group --max-size 5 --min-size 0 --desired-capacity 0
 
+echo " getting instances still attached to autoscaling group if any"
 # Get instance attached to Auto Scaling Group
 IDautoscalinginstances=$(aws autoscaling describe-auto-scaling-instances --query 'AutoScalingInstances[].InstanceId')
 
-# Detach instance from Auto scaling group
+echo " Detach instance from Auto scaling group"
 aws autoscaling detach-instances --instance-ids $IDautoscalinginstances --auto-scaling-group-name my-scaling-group --should-decrement-desired-capacity
 
 # This step is not needed
 #ARNname=$(aws autoscaling  describe-auto-scaling-groups --query 'AutoScalingGroups[].AutoScalingGroupARN')
 
-### Update the autoscaling group to detach the launched configuration
+echo " Update the autoscaling group to detach the launched configuration"
 aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-scaling-group
 
-## There are no configurations attached to auto-scaling-group 
+echo " Check if configurations attached to auto-scaling-group "
 aws autoscaling describe-auto-scaling-instances --output json
 
 echo " Force delete auto-scaling-group" 
@@ -48,3 +52,6 @@ aws elb delete-load-balancer --load-balancer-name  my-load-balancer
 
 echo " Delete the deregistered instances"
 aws ec2 terminate-instances --instance-ids $Instanceattached
+
+echo " Display auto-scaling-group has no configurations attached "
+aws autoscaling describe-auto-scaling-instances --output json
