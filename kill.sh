@@ -8,7 +8,7 @@ echo "This script is to destroy resources built with create-env.sh script"
 echo " Decrease Desired capacity of Autoscaling group to 1"
 aws autoscaling  set-desired-capacity --auto-scaling-group-name my-scaling-group --desired-capacity 1
 
-echo " Detachng Load Balancer from autoscaling group"
+echo " Detaching Load Balancer from autoscaling group"
 aws autoscaling detach-load-balancers --auto-scaling-group-name my-scaling-group --load-balancer-names my-load-balancer
 
 ## Update autoscaling group min/max to Zero
