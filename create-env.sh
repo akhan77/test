@@ -25,6 +25,8 @@ aws ec2 authorize-security-group-ingress --group-id $groupid --protocol tcp --po
 echo " Step4 - Launch Instance with client-token"
 
 aws ec2 run-instances --image-id $1 --count $2 --instance-type t2.micro --key-name Week4Key  --security-groups my-group --client-token amenatoken --user-data file://installapp.sh
+echo " Display Instances created with Token"
+aws ec2 describe-instances --filter --query 'Reservations[].Instances[].[InstanceId,ClientToken]'
 
 #echo  " Step 5 - Get Instance ID"
 #ID=$(aws ec2 describe-instances --filter "Name=instance-state-name,Values=running" --query 'Reservations[].Instances[].InstanceId')
@@ -67,5 +69,5 @@ aws autoscaling create-launch-configuration --launch-configuration-name my-confi
 echo " Launching the aws autoscaling Group with launch configuration-name, set min, max, and desired capacity and attaching the load-balancer"
 
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name my-config-name --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
-echo " Display the Auto scaling group with attached instances on Screen"
+echo " Display the Auto scaling group has no instance or launching configuration attached on Screen"
 aws autoscaling describe-auto-scaling-instances --output json
