@@ -70,44 +70,30 @@ echo " Force delete auto-scaling-group"
 
 aws autoscaling delete-auto-scaling-group --auto-scaling-group-name my-scaling-group --force-delete
 
-
-
 echo " Delete launched configuration"
 
 aws autoscaling delete-launch-configuration --launch-configuration-name my-config-name
-
-
 
 echo " Any instances if still attached to Load Balancer"
 
 Instanceattached=$(aws elb describe-load-balancers --query 'LoadBalancerDescriptions[].Instances')
 
-
-
 echo " Deregister instances attached to Load Balancer"
 
 aws elb deregister-instances-from-load-balancer --load-balancer-name my-load-balancer --instances $Instanceattached 
-
-
 
 echo " Delete Load Balancer Listeners"
 
 aws elb delete-load-balancer-listeners --load-balancer-name my-load-balancer  --load-balancer-ports 80
 
-
-
 echo " Delete load balancer"
 
 aws elb delete-load-balancer --load-balancer-name  my-load-balancer
 
-
-
 echo " Delete the deregistered instances"
 
 aws ec2 terminate-instances --instance-ids $Instanceattached
-
-
-
+sleep 1s
 echo " Display auto-scaling-group has no configurations attached "
-
+sleep 10s
 aws autoscaling describe-auto-scaling-instances --output json
