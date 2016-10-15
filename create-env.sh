@@ -1,10 +1,7 @@
 #!/bin/bash
 
 #set -x -e
-
 ##IMAGE ID = ami-06b94666  
-
-## Values for $1 is for Image Id and $2 for Count"
 
 ##HOME WORK WEEK7 ##
 if [ $# -eq 5 ] 
@@ -18,7 +15,7 @@ fi
 echo " Now continuing with the script"
 echo "AMI-ID = $1, key-name =$2, Security-group=$3, launch-configuration=$4, count=$5"
 
-echo "Step 1 - Create Key, Key Name = Week4Key"
+echo "Step 1 - Create Key, Key Name = $2 "
 aws ec2 create-key-pair --key-name $2 --query 'KeyMaterial' --output text>Week7Key.pem
 
 echo " Step2 - Create a group-id"
@@ -33,7 +30,7 @@ aws ec2 authorize-security-group-ingress --group-id $groupid --protocol tcp --po
 
 echo " Step4 - Launch Instance with client-token"
 
-aws ec2 run-instances --image-id $1 --count $5 --instance-type t2.micro --key-name $2  --security-groups $3 --client-token amenatoken --user-data file://installapp.sh
+aws ec2 run-instances --image-id $1 --count $5 --instance-type t2.micro --key-name $2  --security-groups $3 --client-token amenatoken-week7 --user-data file://installapp.sh
 echo " Display Instances created with Token"
 aws ec2 describe-instances --filter --query 'Reservations[].Instances[].[InstanceId,ClientToken]'
 
@@ -79,4 +76,5 @@ echo " Launching the aws autoscaling Group with launch configuration-name, set m
 
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name $4 --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
 echo " Display the Auto scaling group with instance and launching configuration attached on Screen"
+sleep 5s
 aws autoscaling describe-auto-scaling-instances --output json
