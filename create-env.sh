@@ -31,7 +31,6 @@ then    echo "Valid Arguments Passed from Command Line"
 fi
 
 
-
 echo " Now continuing with the script"
 
 echo "AMI-ID = $1, key-name =$2, Security-group=$3, launch-configuration=$4, count=$5"
@@ -68,7 +67,7 @@ echo " Step4 - Launch Instance with client-token"
 
 
 
-aws ec2 run-instances --image-id $1 --count $5 --instance-type t2.micro --key-name $2  --security-groups $3 --client-token week7-amenatoken --user-data file://installapp.sh
+aws ec2 run-instances --image-id $1 --count $5 --instance-type t2.micro --key-name $2  --security-groups $3 --client-token week7amenatoken --user-data file://installapp.sh
 
 echo " Display Instances created with Token"
 
@@ -159,5 +158,5 @@ echo " Launching the aws autoscaling Group with launch configuration-name, set m
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name $4 --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
 
 echo " Display the Auto scaling group with instance and launching configuration attached on Screen"
-
+sleep 5s
 aws autoscaling describe-auto-scaling-instances --output json
