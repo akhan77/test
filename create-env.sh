@@ -6,15 +6,24 @@
 
 ## Values for $1 is for Image Id and $2 for Count"
 
-##HOME WORK WEEK4 ##
+##HOME WORK WEEK7 ##
+if [ $# -eq 5 ] 
+then    echo "Valid Arguments Passed from Command Line"
+    else
+    echo "Invalid arguments received please pass all 5 arguments in this order AMI-ID, key-name, security-group, launch-configuration, count"
+    exit 1
+
+fi
+
+echo " Now continuing with the script"
+echo "AMI-ID = $1, key-name =$2, Security-group=$3, launch-configuration=$4, count=$5"
 
 echo "Step 1 - Create Key, Key Name = Week4Key"
-
-aws ec2 create-key-pair --key-name Week4Key --query 'KeyMaterial' --output text>Week4Key.pem
+aws ec2 create-key-pair --key-name $2 --query 'KeyMaterial' --output text>Week7Key.pem
 
 echo " Step2 - Create a group-id"
 
-groupid=$(aws ec2 create-security-group --group-name my-group --description "This my-group for Week4 HomeWork")
+groupid=$(aws ec2 create-security-group --group-name $3 --description "This my-group for Week7 HomeWork")
 
 echo $groupid
 
@@ -24,7 +33,7 @@ aws ec2 authorize-security-group-ingress --group-id $groupid --protocol tcp --po
 
 echo " Step4 - Launch Instance with client-token"
 
-aws ec2 run-instances --image-id $1 --count $2 --instance-type t2.micro --key-name Week4Key  --security-groups my-group --client-token amenatoken --user-data file://installapp.sh
+aws ec2 run-instances --image-id $1 --count $5 --instance-type t2.micro --key-name $2  --security-groups $3 --client-token amenatoken --user-data file://installapp.sh
 echo " Display Instances created with Token"
 aws ec2 describe-instances --filter --query 'Reservations[].Instances[].[InstanceId,ClientToken]'
 
@@ -64,10 +73,10 @@ echo "Create aws autoscaling configuration"
 
 #aws autoscaling create-launch-configuration --launch-configuration-name my-config-name --key-name Week4Key --image-id ami-06b94666  --instance-type t2.micro --user-data file://installapp.sh  
 
-aws autoscaling create-launch-configuration --launch-configuration-name my-config-name --key-name Week4Key --image-id $1 --instance-type t2.micro --user-data file://installapp.sh  
+aws autoscaling create-launch-configuration --launch-configuration-name $4 --key-name $2 --image-id $1 --instance-type t2.micro --user-data file://installapp.sh  
 
 echo " Launching the aws autoscaling Group with launch configuration-name, set min, max, and desired capacity and attaching the load-balancer"
 
-aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name my-config-name --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-scaling-group --launch-configuration-name $4 --availability-zone us-west-2b --load-balancer-names my-load-balancer --max-size 5 --min-size 1 --desired-capacity 4
 echo " Display the Auto scaling group with instance and launching configuration attached on Screen"
 aws autoscaling describe-auto-scaling-instances --output json
